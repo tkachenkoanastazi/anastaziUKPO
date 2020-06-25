@@ -18,7 +18,7 @@ public class ParserBlackTest {
             String expression="mama";
             String str = "papa mama ya";
             int result = parser.parse(expression,str);
-            assertEquals(6,result);
+            assertEquals(5,result);
         }
         @Test
         public void dotString()
@@ -26,7 +26,7 @@ public class ParserBlackTest {
             String expression = "m.";
             String str = "papa mama ya";
             int result= parser.parse(expression,str);
-            assertEquals(6,result);
+            assertEquals(5,result);
         }
         @Test
         public void plusString()
@@ -34,7 +34,7 @@ public class ParserBlackTest {
             String expression = "m+ama";
             String str = "papa mama ya";
             int result= parser.parse(expression,str);
-            assertEquals(6,result);
+            assertEquals(5,result);
         }
         @Test
         public void starString()
@@ -45,19 +45,11 @@ public class ParserBlackTest {
             assertEquals(5,result);
         }
         @Test
-        public void dotstarString()
-        {
-            String expression ="m.*ma";
-            String str = "papa mama ya";
-            int result= parser.parse(expression,str);
-            assertEquals(6,result);
-        }
-        @Test
         public void dotplusString() {
             String expression ="m.+ma";
             String str = "papa mama ya";
             int result= parser.parse(expression,str);
-            assertEquals(6,result);
+            assertEquals(5,result);
         }
         @Test
         public void hardLettersParse() {
@@ -72,21 +64,25 @@ public class ParserBlackTest {
             String expression ="k.*a";
             String str = "papa mama ya";
             int result= parser.parse(expression,str);
-            assertEquals(-1,result);
+            assertEquals(1,result);
         }
         @Test
         public void symbolsParse() {
+            assertTimeoutPreemptively(Duration.ofMillis(1000), ()-> {;
             String expression="ma*ma";
             String str="?papa& ma*ma)+ ya";
             int result = parser.parse(expression,str);
             assertEquals(8, result);
+        }, ()->"Тест выполняется дольше 1000ms");
         }
-        @org.junit.Test
+        @Test
         public void quoteParse() {
+            assertTimeoutPreemptively(Duration.ofMillis(1000), ()-> {
             String expression="ma*ma\"";
             String str="?pa\"pa& ma*ma\")+ ya";
             int result = parser.parse(expression,str);
-            assertEquals(9, result);
+            assertEquals(8, result);
+            }, ()->"Тест выполняется дольше 1000ms");
         }
         @Test
         public void russianParse() {
@@ -100,15 +96,9 @@ public class ParserBlackTest {
         @Test
         public void zeroTextParse() {
             String expression=" ";
-            String str="ма";
+            String str="ma";
+            thrown.expect(UnsupportedOperationException.class);
             int result = parser.parse(expression,str);
-            assertEquals(-1, result);
-        }
-        @Test
-        public void zeroTextAndStringParse() {
-            String expression="";
-            String str="";
-            int result = parser.parse(expression,str);
-            assertEquals(-1, result);
+            thrown.expectMessage("Неверно построено регулярное выражение");
         }
     }
